@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Box, ChakraProvider, Container, Flex, Stack } from '@chakra-ui/react'
+import Header from './components/Header'
+import Summary from './components/Summary'
+import Transactions from './components/Transactions'
+import NewTransactionModal from './components/NewTransactionModal'
+import theme from './styles/theme'
+import { NewTransactionModalProvider } from './hooks/useNewTransactionModal'
+import { TransactionsProvider } from './hooks/useTransactions'
+import Footer from './components/Footer'
+
+import { makeServer } from './server'
+
+if (process.env.NODE_ENV === 'development') {
+  makeServer()
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <ChakraProvider theme={theme}>
+      <TransactionsProvider>
+        <NewTransactionModalProvider>
+          <Flex direction="column" height="100vh">
+            <Header />
+            <Container flex={1} maxWidth="desktop" mt={10}>
+              <Stack spacing={8}>
+                <Summary />
+                <Transactions />
+                <NewTransactionModal />
+              </Stack>
+            </Container>
+            <Box py={10}>
+              <Footer />
+            </Box>
+          </Flex>
+        </NewTransactionModalProvider>
+      </TransactionsProvider>
+    </ChakraProvider>
+  )
 }
 
-export default App;
+export default App
